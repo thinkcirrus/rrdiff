@@ -15,7 +15,7 @@ static VALUE rrdiff_signature(VALUE mod, VALUE old_file, VALUE sig_file)
     basis = rs_file_open(StringValuePtr(old_file), "rb");
     signature = rs_file_open(StringValuePtr(sig_file), "wb");
 
-    result = rs_sig_file(basis, signature, RS_DEFAULT_BLOCK_LEN, 8, &stats);
+    result = rs_sig_file(basis, signature, 8, 0, RS_BLAKE2_SIG_MAGIC, &stats);
 
     rs_file_close(basis);
     rs_file_close(signature);
