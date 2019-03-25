@@ -11,12 +11,13 @@ static VALUE rrdiff_signature(VALUE mod, VALUE old_file, VALUE sig_file)
 
     rs_result result;
     rs_stats_t stats;
-  
+
     basis = rs_file_open(StringValuePtr(old_file), "rb");
     signature = rs_file_open(StringValuePtr(sig_file), "wb");
 
-    result = rs_sig_file(basis, signature, 8, 0, RS_BLAKE2_SIG_MAGIC, &stats);
-
+    #result = rs_sig_file(basis, signature, 8, 0, RS_BLAKE2_SIG_MAGIC, &stats);
+    result = rs_sig_file(basis, signature, RS_DEFAULT_BLOCK_LEN, RS_DEFAULT_STRONG_LEN, &stats);
+    
     rs_file_close(basis);
     rs_file_close(signature);
 
@@ -43,7 +44,7 @@ static VALUE rrdiff_delta(VALUE mod, VALUE new_file, VALUE sig_file, VALUE delta
         return Qnil;
 
     result = rs_delta_file(sig, newfile, deltafile, &stats);
-    
+
     rs_free_sumset(sig);
 
     rs_file_close(newfile);
@@ -53,7 +54,7 @@ static VALUE rrdiff_delta(VALUE mod, VALUE new_file, VALUE sig_file, VALUE delta
     return Qnil;
 }
 
-//rs_result rs_patch_file(FILE *basis_file, FILE *delta_file, FILE *new_file, rs_stats_t *); 
+//rs_result rs_patch_file(FILE *basis_file, FILE *delta_file, FILE *new_file, rs_stats_t *);
 
 static VALUE rrdiff_patch(VALUE mod, VALUE old_file, VALUE delta_file, VALUE patched_file)
 {
